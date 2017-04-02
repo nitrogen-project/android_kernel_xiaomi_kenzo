@@ -569,6 +569,7 @@ int msm_sensor_match_id(struct msm_sensor_ctrl_t *s_ctrl)
 	rc = sensor_i2c_client->i2c_func_tbl->i2c_read(
 		sensor_i2c_client, slave_info->sensor_id_reg_addr,
 		&chipid, MSM_CAMERA_I2C_WORD_DATA);
+
 	if (rc < 0) {
 		pr_err("%s: %s: read id failed\n", __func__, sensor_name);
 		return rc;
@@ -865,13 +866,6 @@ static int msm_sensor_config32(struct msm_sensor_ctrl_t *s_ctrl,
 				s_ctrl->sensor_i2c_client,
 				read_config.reg_addr,
 				&local_data, read_config.data_type);
-		if (s_ctrl->sensor_i2c_client->cci_client) {
-			s_ctrl->sensor_i2c_client->cci_client->sid =
-				orig_slave_addr;
-		} else if (s_ctrl->sensor_i2c_client->client) {
-			s_ctrl->sensor_i2c_client->client->addr =
-				orig_slave_addr;
-		}
 		if (rc < 0) {
 			pr_err("%s:%d: i2c_read failed\n", __func__, __LINE__);
 			break;
@@ -1265,13 +1259,6 @@ int msm_sensor_config(struct msm_sensor_ctrl_t *s_ctrl, void __user *argp)
 				s_ctrl->sensor_i2c_client,
 				read_config.reg_addr,
 				&local_data, read_config.data_type);
-		if (s_ctrl->sensor_i2c_client->cci_client) {
-			s_ctrl->sensor_i2c_client->cci_client->sid =
-				orig_slave_addr;
-		} else if (s_ctrl->sensor_i2c_client->client) {
-			s_ctrl->sensor_i2c_client->client->addr =
-				orig_slave_addr;
-		}
 		if (rc < 0) {
 			pr_err("%s:%d: i2c_read failed\n", __func__, __LINE__);
 			break;

@@ -673,6 +673,9 @@ int msm_camera_get_dt_power_setting_data(struct device_node *of_node,
 
 	power_info->power_down_setting_size = size;
 
+	for (i = 0; i < size; i++)
+		power_info->power_down_setting[i].config_val = 0;
+
 	if (need_reverse) {
 		int c, end = size - 1;
 		struct msm_sensor_power_setting power_down_setting_t;
