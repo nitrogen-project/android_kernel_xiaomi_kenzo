@@ -3606,6 +3606,7 @@ struct regulator_ops smbchg_otg_reg_ops = {
 #define ADAPTER_ALLOWANCE_MASK		0x7
 #define USBIN_ADAPTER_9V		0x3
 #define USBIN_ADAPTER_5V_9V_CONT	0x2
+#define USBIN_ADAPTER_5V		0x0
 #define HVDCP_EN_BIT			BIT(3)
 static int smbchg_external_otg_regulator_enable(struct regulator_dev *rdev)
 {
@@ -3640,7 +3641,11 @@ static int smbchg_external_otg_regulator_enable(struct regulator_dev *rdev)
 
 	rc = smbchg_sec_masked_write(chip,
 				chip->usb_chgpth_base + USBIN_CHGR_CFG,
+#ifdef CONFIG_MACH_XIAOMI_KENZO
+				0xFF, USBIN_ADAPTER_5V);
+#else
 				0xFF, USBIN_ADAPTER_9V);
+#endif
 	if (rc < 0) {
 		dev_err(chip->dev, "Couldn't write usb allowance rc=%d\n", rc);
 		return rc;
@@ -3668,7 +3673,11 @@ static int smbchg_external_otg_regulator_disable(struct regulator_dev *rdev)
 	 */
 	rc = smbchg_sec_masked_write(chip,
 				chip->usb_chgpth_base + CHGPTH_CFG,
+#ifdef CONFIG_MACH_XIAOMI_KENZO
+				HVDCP_EN_BIT, 0);
+#else
 				HVDCP_EN_BIT, HVDCP_EN_BIT);
+#endif
 	if (rc < 0) {
 		dev_err(chip->dev, "Couldn't enable HVDCP rc=%d\n", rc);
 		return rc;
@@ -4457,7 +4466,11 @@ static void restore_from_hvdcp_detection(struct smbchg_chip *chip)
 	/* allow 5 to 9V chargers */
 	rc = smbchg_sec_masked_write(chip,
 			chip->usb_chgpth_base + USBIN_CHGR_CFG,
+#ifdef CONFIG_MACH_XIAOMI_KENZO
+			ADAPTER_ALLOWANCE_MASK, USBIN_ADAPTER_5V);
+#else
 			ADAPTER_ALLOWANCE_MASK, USBIN_ADAPTER_5V_9V_CONT);
+#endif
 	if (rc < 0)
 		pr_err("Couldn't write usb allowance rc=%d\n", rc);
 
@@ -4926,8 +4939,12 @@ static int fake_insertion_removal(struct smbchg_chip *chip, bool insertion)
 	rc = smbchg_sec_masked_write(chip,
 			chip->usb_chgpth_base + USBIN_CHGR_CFG,
 			ADAPTER_ALLOWANCE_MASK,
+#ifdef CONFIG_MACH_XIAOMI_KENZO
+			USBIN_ADAPTER_5V);
+#else
 			insertion ?
 			USBIN_ADAPTER_5V_9V_CONT : USBIN_ADAPTER_9V);
+#endif
 	if (rc < 0) {
 		pr_err("Couldn't write usb allowance rc=%d\n", rc);
 		return rc;
