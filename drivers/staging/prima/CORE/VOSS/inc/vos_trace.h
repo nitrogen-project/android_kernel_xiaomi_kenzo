@@ -103,17 +103,16 @@ typedef enum
 
 #include  <i_vos_trace.h>   
 
-#ifdef TRACE_RECORD
-
 #define CASE_RETURN_STRING( str )           \
     case ( ( str ) ): return( (tANI_U8*)(#str) );
+
+#ifdef TRACE_RECORD
 
 #define MTRACE(p) p
 #define NO_SESSION 0xFF
 
 #else
 #define MTRACE(p) {  }
-#define CASE_RETURN_STRING( str ) { }
 
 #endif
 

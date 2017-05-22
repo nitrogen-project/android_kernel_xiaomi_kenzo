@@ -57,8 +57,6 @@
 #include "wlan_qct_wda.h"
 #include "vos_trace.h"
 
-#ifdef TRACE_RECORD
-
 /* ---------------------------------------------------------------------------
     \fn macTraceGetHDDWlanConnState
     \function to get string equivalent of a value
@@ -906,6 +904,10 @@ tANI_U8* macTraceGetWdaMsgString( tANI_U16 wdaMsg )
         CASE_RETURN_STRING(WDA_MON_STOP_REQ);
         CASE_RETURN_STRING(WDA_SPOOF_MAC_ADDR_REQ);
         CASE_RETURN_STRING(WDA_LOST_LINK_PARAMS_IND);
+        CASE_RETURN_STRING(WDA_SET_ARP_STATS_REQ);
+        CASE_RETURN_STRING(WDA_GET_ARP_STATS_REQ);
+        CASE_RETURN_STRING(WDA_TRIGGER_ADD_BA_REQ);
+        CASE_RETURN_STRING(WDA_GET_CON_STATUS);
         default:
             return((tANI_U8*) "UNKNOWN" );
             break;
@@ -1087,5 +1089,3 @@ tANI_U8* macTraceMsgString(tpAniSirGlobal pMac, tANI_U32 msgType)
                 return ((tANI_U8*)"Unknown MsgType");
     }
 }
-
-#endif
