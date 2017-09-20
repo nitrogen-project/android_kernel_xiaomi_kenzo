@@ -110,7 +110,8 @@ static void dyn_fsync_force_flush(void)
 {
 	/* flush all outstanding buffers */
 	wakeup_flusher_threads(0, WB_REASON_SYNC);
-	emergency_sync();
+	sync_filesystems(0);
+	sync_filesystems(1);
 }
 
 #if defined(CONFIG_FB)
