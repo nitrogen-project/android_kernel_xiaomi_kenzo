@@ -22,7 +22,6 @@
 #include <linux/notifier.h>
 #include <linux/reboot.h>
 #include <linux/writeback.h>
-#include <linux/syscalls.h>
 
 #if defined(CONFIG_FB)
 #include <linux/notifier.h>
@@ -176,7 +175,7 @@ static int dyn_fsync_panic_event(struct notifier_block *this,
 		unsigned long event, void *ptr)
 {
 	power_suspend_active = true;
-	sys_sync();
+	dyn_fsync_force_flush();
 	//pr_warn("dyn fsync: panic: force flush!\n");
 
 	return NOTIFY_DONE;
@@ -192,7 +191,7 @@ static int dyn_fsync_notify_sys(struct notifier_block *this, unsigned long code,
 {
 	if (code == SYS_DOWN || code == SYS_HALT) {
 		power_suspend_active = true;
-		sys_sync();
+		dyn_fsync_force_flush();
 		//pr_warn("dyn fsync: reboot: force flush!\n");
 	}
 	return NOTIFY_DONE;
